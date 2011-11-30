@@ -2,10 +2,14 @@ require 'spec_helper'
 
 describe FileScheduler::File do
 
+  def file(file, parent = nil)
+    FileScheduler::File.new file, parent
+  end
+
   describe "#name" do
     
     it "should use path basename" do
-      FileScheduler::File.new("/path/to/basename").name.should == "basename"
+      file("/path/to/basename").name.should == "basename"
     end
 
   end
@@ -13,7 +17,11 @@ describe FileScheduler::File do
   describe "#local_time_constraints" do
     
     it "should parse the time specifications in the name" do
-      FileScheduler::File.new("/path/to/12h30m-dummy").local_time_constraints.should == FileScheduler::TimeMark.new(:hour => 12, :minute => 30)
+      file("/path/to/12h30m-dummy",mock).local_time_constraints.should == FileScheduler::TimeMark.new(:hour => 12, :minute => 30)
+    end
+
+    it "should be nil when parent isn't defined (root directory)" do
+      file("/path/to/12h30m-dummy").local_time_constraints.should be_nil
     end
 
   end
@@ -22,7 +30,7 @@ describe FileScheduler::File do
 
     it "should concat with parent constraints" do
       parent = mock(:time_constraints => FileScheduler::TimeMark.new(:week_day => 1))
-      FileScheduler::File.new("/path/1w/12h30m-dummy", parent).time_constraints.should == FileScheduler::TimeChain.new(parent.time_constraints, FileScheduler::TimeMark.new(:hour => 12, :minute => 30))
+      file("/path/1w/12h30m-dummy", parent).time_constraints.should == FileScheduler::TimeChain.new(parent.time_constraints, FileScheduler::TimeMark.new(:hour => 12, :minute => 30))
     end
 
   end
@@ -36,7 +44,7 @@ describe FileScheduler::File do
         file = base.touch "file"
         directory = base.mkpath "directory"
 
-        FileScheduler::File.new(base).file_system_children.should include(file, directory)
+        file(base).file_system_children.should include(file, directory)
       end
     end
 
@@ -51,9 +59,9 @@ describe FileScheduler::File do
         file = base.touch "file"
         directory = base.mkpath "directory"
 
-        parent = FileScheduler::File.new(base)
-        parent.children.should include(FileScheduler::File.new(file, parent))
-        parent.children.should include(FileScheduler::File.new(directory, parent))
+        parent = file(base)
+        parent.children.should include(file(file, parent))
+        parent.children.should include(file(directory, parent))
       end
     end
 
@@ -64,7 +72,7 @@ describe FileScheduler::File do
         file = base.touch "_ignored_file"
         directory = base.mkpath "_ignored_directory"
         
-        FileScheduler::File.new(base).children.should be_empty
+        file(base).children.should be_empty
       end
     end
 

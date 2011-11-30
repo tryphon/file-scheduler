@@ -17,7 +17,7 @@ module FileScheduler
     end
 
     def local_time_constraints
-      parser.parse(name)
+      parser.parse(name) if parent
     end
 
     def time_constraints
