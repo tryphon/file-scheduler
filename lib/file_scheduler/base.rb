@@ -12,7 +12,7 @@ module FileScheduler
     end
 
     def next(time = Time.now)
-      Scheduling.new(root, time).schedulable_contents.shuffle.first
+      Scheduling.new(root, time).next
     end
 
   end

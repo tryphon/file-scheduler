@@ -11,7 +11,7 @@ module FileScheduler
     end
 
     def parse(string)
-      parsed_fields = string.scan(/^#{self.class.time_mark_format}(-#{self.class.time_mark_format})?/).first.map do |field|
+      parsed_fields = string.scan(/^T?#{self.class.time_mark_format}(-#{self.class.time_mark_format})?/).first.map do |field|
         field.to_i if field
       end
 

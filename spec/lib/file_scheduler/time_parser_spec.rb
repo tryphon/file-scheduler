@@ -24,6 +24,10 @@ describe FileScheduler::TimeParser do
       subject.parse("12h30m-15h45m-dummy").should == FileScheduler::TimeInterval.new(FileScheduler::TimeMark.new(:hour => 12, :minute => 30), FileScheduler::TimeMark.new(:hour => 15, :minute => 45))
     end
 
+    it "should parse T12h30m-dummy" do
+      subject.parse("T12h30m-dummy").should == FileScheduler::TimeMark.new(:hour => 12, :minute => 30)
+    end
+
   end
 
 end

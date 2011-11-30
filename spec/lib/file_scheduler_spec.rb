@@ -53,4 +53,13 @@ describe FileScheduler do
     end
   end
 
+  it "should support fixed time" do
+    TestDir.open do |directory|
+      directory.file "test.wav"
+      directory.file "T13h-test.wav"
+
+      directory.next("13:00").should == "T13h-test.wav"
+    end
+  end
+
 end

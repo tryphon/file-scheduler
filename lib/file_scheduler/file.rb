@@ -37,12 +37,18 @@ module FileScheduler
       @file_system_children ||= path.children
     end
 
+    def hidden?
+      name.start_with?("_")
+    end
+
+    def forced_started_time?
+      name.start_with?("T")
+    end
+
     def children
       @children ||= file_system_children.collect do |file|
-        unless file.basename.to_s.start_with?("_")
-          File.new file, self
-        end
-      end.compact
+        File.new(file, self)
+      end.delete_if(&:hidden?)
     end
 
     def contents
