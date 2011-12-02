@@ -12,8 +12,8 @@ module FileScheduler
       @name ||= path.basename.to_s
     end
 
-    def parser
-      @parser ||= TimeParser.new
+    def hidden?
+      name.start_with?("_")
     end
 
     def local_time_constraints
@@ -37,13 +37,7 @@ module FileScheduler
       @file_system_children ||= path.children
     end
 
-    def hidden?
-      name.start_with?("_")
-    end
-
-    def forced_started_time?
-      name.start_with?("T")
-    end
+    include FileScheduler::Content
 
     def children
       @children ||= file_system_children.collect do |file|

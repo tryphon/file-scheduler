@@ -3,8 +3,13 @@ module FileScheduler
 
     attr_accessor :root
 
-    def initialize(root)
-      @root = FileScheduler::File.new(root)
+    def initialize(attributes = {})
+      @root =
+        if String === attributes or Pathname === attributes
+          FileScheduler::File.new(attributes)
+        elsif attributes.has_key?(:playlist)
+          FileScheduler::Playlist.new(attributes[:playlist])
+        end
     end
 
     def contents
