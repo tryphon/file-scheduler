@@ -1,20 +1,35 @@
+require 'open-uri'
+
 module FileScheduler
   class Playlist
 
-    attr_reader :definition
+    attr_accessor :url, :content
 
-    def initialize(definition)
-      @definition = definition
+    def initialize(attributes = {})
+      if String === attributes 
+        attributes = 
+          { (attributes.url? ? :url : :content) => attributes }
+      end
+
+      attributes.each { |k,v| send "#{k}=", v }
+    end
+
+    def content
+      @content ||= open(url, &:read)
     end
 
     def lines
-      @lines ||= definition.split
+      @lines ||= content.split
     end
 
     def contents
-      lines.collect do |line|
-        FileScheduler::URL.new line
-      end
+      lines.collect do |path|
+        FileScheduler::URL.new :path => path, :url => full_url(path)
+      end.delete_if(&:hidden?)
+    end
+
+    def full_url(path)
+      URI.join url, path if url
     end
 
   end

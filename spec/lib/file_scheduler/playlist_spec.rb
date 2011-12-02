@@ -9,7 +9,7 @@ describe FileScheduler::Playlist do
   describe "contents" do
     
     it "should return contents described by URLs" do
-      FileScheduler::Playlist.new("file").contents.should include(url("file"))
+      FileScheduler::Playlist.new(:content => "dummy").contents.should include(url("dummy"))
     end
 
   end

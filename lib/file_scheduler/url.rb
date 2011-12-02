@@ -2,14 +2,24 @@ module FileScheduler
   class URL
     include FileScheduler::Content
 
-    attr_reader :path
+    attr_accessor :path, :url
 
-    def initialize(path)
-      @path = path
+    def initialize(attributes = {})
+      if String === attributes
+        attributes = { :path => attributes }
+      end
+
+      attributes.each { |k,v| send "#{k}=", v }
     end
 
     def ==(other)
       other.respond_to?(:path) and path == other.path
+    end
+
+    def hidden?
+      path_parts.any? do |part|
+        part.start_with?("_")
+      end
     end
 
     def path_parts
@@ -33,7 +43,7 @@ module FileScheduler
     end
     
     def to_s
-      path
+      (url and url.to_s) or path 
     end
 
   end

@@ -4,9 +4,17 @@ module FileScheduler
     attr_accessor :root
 
     def initialize(attributes = {})
+      case attributes
+      when String
+        attributes = 
+          { (attributes.url? ? :playlist : :directory) => attributes }
+      when Pathname
+        attributes = { :directory => attributes }
+      end
+
       @root =
-        if String === attributes or Pathname === attributes
-          FileScheduler::File.new(attributes)
+        if attributes.has_key?(:directory)
+          FileScheduler::File.new(attributes[:directory])
         elsif attributes.has_key?(:playlist)
           FileScheduler::Playlist.new(attributes[:playlist])
         end

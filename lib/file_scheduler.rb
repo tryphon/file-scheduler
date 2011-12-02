@@ -6,6 +6,7 @@ end
 
 require 'pathname'
 
+require "file_scheduler/core_ext"
 require "file_scheduler/time_mark"
 require "file_scheduler/time_interval"
 require "file_scheduler/time_parser"
