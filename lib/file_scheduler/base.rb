@@ -28,5 +28,9 @@ module FileScheduler
       Scheduling.new(root, time).next
     end
 
+    def forced_next(time = Time.now)
+      Scheduling.new(root, time).forced_next
+    end
+
   end
 end
