@@ -4,4 +4,16 @@ $: << File.expand_path('../../lib', __FILE__)
 
 require 'file_scheduler'
 
-puts FileScheduler::Base.new(ARGV.shift).send(ARGV.shift)
+root = ARGV.shift
+command = ARGV.shift
+
+scheduler = FileScheduler::Base.new(root)
+
+case command
+when "contents"
+  scheduler.contents.each do |content|
+    puts "#{content} #{content.time_constraints}"
+  end
+else
+  puts scheduler.send(command)
+end
