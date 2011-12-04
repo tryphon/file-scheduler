@@ -10,21 +10,14 @@ module FileScheduler
     end
 
     def include?(time)
-      from.compare_to(time, reversed_attributes) <= 0 and
-        to.compare_to(time) > 0
-    end
-
-    alias_method :matches?, :include?
-
-    def reversed_attributes
-      @reversed_attributes ||= common_attributes.select do |attribute|
-        from[attribute] > to[attribute]
+      if from > to
+        not time.between?(to, from)
+      else
+        time.between?(from, to)
       end
     end
 
-    def common_attributes
-      from.attributes.keys & to.attributes.keys
-    end
+    alias_method :matches?, :include?
 
     def ==(other)
       [:from, :to].all? do |attribute|
@@ -34,6 +27,10 @@ module FileScheduler
 
     def to_s
       "#{from}-#{to}"
+    end
+
+    def inspect
+      to_s
     end
 
   end

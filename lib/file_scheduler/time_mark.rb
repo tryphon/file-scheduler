@@ -1,6 +1,16 @@
 class Time
   alias_method :minute, :min
   alias_method :week_day, :wday
+
+  alias_method :compare_to_without_time_mark_support, :<=>
+
+  def <=>(other)
+    if FileScheduler::TimeMark === other
+      -(other <=> self)
+    else
+      compare_to_without_time_mark_support other
+    end
+  end
 end
 
 module FileScheduler
@@ -28,12 +38,11 @@ module FileScheduler
       end
     end
 
-    def compare_to(time, reversed = [])
+    def <=>(time)
       [:year, :month, :day, :hour, :minute].each do |attribute|
         value = attributes[attribute]
         if value
           comparaison = value <=> time.send(attribute)
-          comparaison = - comparaison if reversed.include?(attribute)
           return comparaison unless comparaison == 0
         end
       end
@@ -41,7 +50,6 @@ module FileScheduler
       0
     end
 
-    alias_method :<=>, :compare_to
     include Comparable
 
     def to_s

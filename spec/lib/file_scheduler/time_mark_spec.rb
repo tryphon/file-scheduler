@@ -31,7 +31,7 @@ describe FileScheduler::TimeMark do
 
   end
 
-  describe "#compare_to" do
+  describe "#<=>" do
 
     it "should be smaller when all attributes are equal or smaller" do
       mark(time).should < time + 60
@@ -43,10 +43,6 @@ describe FileScheduler::TimeMark do
 
     it "should be higher when all attributes are equal or higher" do
       mark(time).should > time - 60
-    end
-
-    it "should reverse value comparaison for specified reversed attributes" do
-      mark(:hour => (time.hour - 1)).compare_to(time, [:hour]).should > 0
     end
 
   end
