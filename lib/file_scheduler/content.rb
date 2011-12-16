@@ -7,5 +7,13 @@ module FileScheduler
     def parser
       @parser ||= TimeParser.new
     end
+
+    def attributes_parser
+      @attributes_parser ||= AttributesParser.new
+    end
+
+    def repeat_constraints
+      @repeat_constraints ||= attributes[:repeat].try(:to_i)
+    end
   end
 end

@@ -18,4 +18,16 @@ describe FileScheduler::URL do
 
   end
 
+  describe "#attributes" do
+
+    it "should merge the parts attributes" do
+      url("parent{key1=parent_value,key2=value2}/dummy{key1=value1}.wav").attributes.should == { :key1 => "value1", :key2 => "value2" }
+    end
+    
+  end
+
+  require File.expand_path("../content_shared_examples", __FILE__)
+
+  it_behaves_like "a content"
+
 end

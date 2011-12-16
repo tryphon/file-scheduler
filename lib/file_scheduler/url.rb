@@ -46,5 +46,11 @@ module FileScheduler
       (url and url.to_s) or path 
     end
 
+    def attributes
+      @attributes ||= path_parts.inject({}) do |attributes, part|
+        attributes.merge attributes_parser.parse(part)
+      end
+    end
+
   end
 end

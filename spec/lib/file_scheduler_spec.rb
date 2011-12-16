@@ -21,8 +21,10 @@ class TestDir < Pathname
     @scheduler ||= FileScheduler::Base.new self
   end
 
-  def next(time)
-    scheduler.next(Time::parse(time)).to_s.gsub("#{self}/", "")
+  def next(time = nil)
+    time = time ? Time::parse(time) : Time.now
+    next_content = scheduler.next(time)
+    next_content.to_s.gsub("#{self}/", "") if next_content
   end
 
 end
@@ -81,6 +83,15 @@ describe FileScheduler do
       directory.file "T13h-test.wav"
 
       directory.next("13:00").should == "T13h-test.wav"
+    end
+  end
+
+  it "should support repeat constraint" do
+    TestDir.open do |directory|
+      directory.file "test{repeat=+5}.wav"
+
+      directory.next.should == "test{repeat=+5}.wav"
+      directory.next.should be_nil
     end
   end
 

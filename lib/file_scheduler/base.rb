@@ -1,7 +1,7 @@
 module FileScheduler
   class Base
 
-    attr_accessor :root
+    attr_accessor :root, :status_file
 
     def initialize(attributes = {})
       case attributes
@@ -20,16 +20,42 @@ module FileScheduler
         end
     end
 
+    def log
+      @log ||= Log.new.tap do |log|
+        log.load(status_file) if status_file
+      end
+    end
+
     def contents
       root.contents
     end
 
+    def scheduling(time = Time.now)
+      Scheduling.new(root, time).tap do |scheduling|
+        scheduling.log = log
+      end
+    end
+
     def next(time = Time.now)
-      Scheduling.new(root, time).next
+      scheduling(time).next
     end
 
     def forced_next(time = Time.now)
-      Scheduling.new(root, time).forced_next
+      scheduling(time).forced_next
+    end
+
+    def after_next(content)
+      log.save(status_file) if status_file
+    end
+
+    [:next, :forced_next].each do |method|
+      alias_method :"#{method}_without_callback", method
+      define_method("#{method}_with_callback") do |*arguments|
+        content = send "#{method}_without_callback", *arguments
+        after_next content
+        content
+      end
+      alias_method method, :"#{method}_with_callback"
     end
 
   end

@@ -67,5 +67,14 @@ module FileScheduler
       path.to_s
     end
 
+    def local_attributes
+      @local_attributes ||= attributes_parser.parse(name)
+    end
+
+    def attributes
+      @attributes ||=
+        (parent ? parent.attributes : {}).merge(local_attributes)
+    end
+
   end
 end

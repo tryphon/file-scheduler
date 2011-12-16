@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe FileScheduler::File do
 
+  subject { file "dummy" }
+
   def file(file, parent = nil)
     FileScheduler::File.new file, parent
   end
@@ -77,5 +79,26 @@ describe FileScheduler::File do
     end
 
   end
+
+  describe "local_attributes" do
+    
+    it "should use attributes found in name" do
+      file("dummy{key=value}.wav").local_attributes.should == { :key => "value" }
+    end
+
+  end
+
+  describe "#attributes" do
+
+    it "should merge parent attributes with local attributes" do
+      parent = mock(:attributes => {:key1 => "parent_value1", :key2 => "value2"})
+      file("dummy{key1=value1}.wav",parent).attributes.should == { :key1 => "value1", :key2 => "value2" }
+    end
+    
+  end
+
+  require File.expand_path("../content_shared_examples", __FILE__)
+
+  it_behaves_like "a content"
 
 end
