@@ -25,7 +25,7 @@ module FileScheduler
     def schedulable_by_repeat?(content)
       content.repeat_constraints.nil? or
         log.distance(content).nil? or
-        log.distance(content) > content.repeat_constraints
+        log.distance(content) >= content.repeat_constraints
     end
 
     def schedulable_contents
