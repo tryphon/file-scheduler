@@ -1,7 +1,7 @@
 module FileScheduler
   class Base
 
-    attr_accessor :root, :status_file
+    attr_accessor :root, :log, :status_file
 
     def initialize(attributes = {})
       case attributes

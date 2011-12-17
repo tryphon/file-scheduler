@@ -5,7 +5,7 @@ module FileScheduler
 
     def initialize(options = {})
       options.set_attributes self, :max_size => 100
-      @contents = []
+      clear
     end
 
     def distance(content)
@@ -18,14 +18,34 @@ module FileScheduler
       content
     end
 
-    def load(file)
-      @contents = Marshal.load(IO.read(file))
+    def clear
+      @contents = []
+    end
+
+    include Enumerable
+    def each(&block)
+      @contents.each(&block)
+    end
+
+    def load(data)
+      return unless data
+
+      # Marshalled data starts with \004
+      unless data.start_with?("\004")
+        data = IO.read(file) if File.exists?(data)
+      end
+
+      @contents = Marshal.load data
       self
+    end
+
+    def dump
+      Marshal.dump(@contents)
     end
 
     def save(file)
       File.open(file, "w") do |f|
-        f.write Marshal.dump(@contents)
+        f.write dump
       end
     end
 
