@@ -32,6 +32,14 @@ describe FileScheduler::TimeInterval do
     it "should not include 00h15 in 22h30-2009Y06h45" do
       interval({:hour => 22, :minute => 30}, {:year => 2009, :hour => 06, :minute => 45}).should_not include(Time.parse("00:15"))
     end
+
+    it "should include Sun Dec 18 2011 in 6w-1w" do
+      interval({:week_day => 6}, {:week_day => 1}).should include(Time.parse("Sun Dec 18 2011"))
+    end
+
+    it "should include Sun Dec 18 2011 in 3w-4w" do
+      interval({:week_day => 3}, {:week_day => 4}).should_not include(Time.parse("Sun Dec 18 2011"))
+    end
     
   end
 

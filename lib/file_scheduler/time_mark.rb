@@ -39,7 +39,7 @@ module FileScheduler
     end
 
     def <=>(time)
-      [:year, :month, :day, :hour, :minute].each do |attribute|
+      [:year, :month, :day, :week_day, :hour, :minute].each do |attribute|
         value = attributes[attribute]
         if value
           comparaison = value <=> time.send(attribute)

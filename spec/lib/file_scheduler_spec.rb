@@ -77,6 +77,14 @@ describe FileScheduler do
     end
   end
 
+  it "should support week day intervals" do
+    TestDir.open do |directory|
+      directory.file "3w-4w-music.wav"
+
+      directory.next("Sun Dec 18 2011").should be_nil
+    end
+  end
+
   it "should support fixed time" do
     TestDir.open do |directory|
       directory.file "test.wav"
