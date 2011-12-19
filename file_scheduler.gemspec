@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = FileScheduler::VERSION
   s.authors     = ["Alban Peignier"]
   s.email       = ["alban@tryphon.eu"]
-  s.homepage    = ""
+  s.homepage    = "http://projects.tryphon.eu/filescheduler"
   s.summary     = %q{Schedule contents from files}
   s.description = %q{Manage a audio/video program from a simple directory}
 
