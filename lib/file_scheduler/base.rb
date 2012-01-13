@@ -3,21 +3,40 @@ module FileScheduler
 
     attr_accessor :root, :log, :status_file
 
-    def initialize(attributes = {})
-      case attributes
-      when String
-        attributes = 
-          { (attributes.url? ? :playlist : :directory) => attributes }
-      when Pathname
-        attributes = { :directory => attributes }
+    def initialize(root = nil, attributes = {})
+      if Hash === root
+        attributes = root
+        root = nil
       end
 
-      @root =
-        if attributes.has_key?(:directory)
-          FileScheduler::File.new(attributes[:directory])
-        elsif attributes.has_key?(:playlist)
-          FileScheduler::Playlist.new(attributes[:playlist])
+      self.root = root if root
+
+      attributes.each do |k,v|
+        send "#{k}=", v
+      end
+    end
+
+    def root=(root)
+      case root
+      when String
+        if root.url? 
+          self.playlist = root
+        else
+          self.directory = root
         end
+      when Pathname
+        self.directory = root
+      else
+        @root = root
+      end
+    end
+
+    def directory=(directory)
+      @root = FileScheduler::File.new directory
+    end
+
+    def playlist=(playlist)
+      @root = FileScheduler::Playlist.new playlist
     end
 
     def log

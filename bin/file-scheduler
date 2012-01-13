@@ -4,10 +4,18 @@ $: << File.expand_path('../../lib', __FILE__)
 
 require 'file_scheduler'
 
+options = {}
+
+while ARGV.first =~ /^--([^=]+)(=([^ ]+))/
+  ARGV.shift
+  name, value = $1, $3
+  options[name] = (value or true)
+end
+
 root = ARGV.shift
 command = ARGV.shift
 
-scheduler = FileScheduler::Base.new(root)
+scheduler = FileScheduler::Base.new root, options
 
 case command
 when "contents"

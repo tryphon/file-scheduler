@@ -9,17 +9,21 @@ module FileScheduler
     end
 
     def distance(content)
-      @contents.index content
+      @contents.index content.to_s
     end
 
     def log(content)
-      @contents.unshift content
+      @contents.unshift content.to_s
       @contents = @contents.first(max_size)
       content
     end
 
     def clear
       @contents = []
+    end
+
+    def empty?
+      @contents.empty?
     end
 
     include Enumerable
@@ -32,10 +36,19 @@ module FileScheduler
 
       # Marshalled data starts with \004
       unless data.start_with?("\004")
-        data = IO.read(file) if File.exists?(data)
+        if ::File.exists?(data)
+          data = IO.read(data)
+        else
+          data = nil
+        end
       end
 
-      @contents = Marshal.load data
+      if data
+        @contents = Marshal.load data
+      else
+        @contents = []
+      end
+
       self
     end
 
@@ -44,9 +57,13 @@ module FileScheduler
     end
 
     def save(file)
-      File.open(file, "w") do |f|
+      ::File.open(file, "w") do |f|
         f.write dump
       end
+    end
+
+    def ==(other)
+      other and @contents == other.to_a
     end
 
   end

@@ -103,6 +103,17 @@ describe FileScheduler do
     end
   end
 
+  it "should support repeat group constraint" do
+    pending
+    TestDir.open do |directory|
+      directory.file "group{repeat_any=+5}/test1.wav"
+      directory.file "group{repeat_any=+5}/test2.wav"
+
+      directory.next.should_not be_nil
+      directory.next.should be_nil
+    end
+  end
+
   context "with playlist" do
     it "should support time intervals in files" do
       TestPlaylist.new.tap do |playlist|

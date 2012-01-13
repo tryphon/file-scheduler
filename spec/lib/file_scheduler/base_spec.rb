@@ -6,6 +6,48 @@ describe FileScheduler::Base do
     subject.root = mock(:contents => mock)
   end
 
+  describe "#directory=" do
+    
+    it "should create a FileScheduler::File root" do
+      subject.directory = "/path/to/contents"
+      subject.root.path.to_s.should == "/path/to/contents"
+    end
+
+  end
+
+  describe "#playlist=" do
+    
+    it "should create a FileScheduler::Playlist root" do
+      subject.playlist = "http://dummy"
+      subject.root.url == "http://dummy"
+    end
+
+  end
+
+  describe "#root=" do
+  
+    it "should use url to create a playlist" do
+      subject.should_receive(:playlist=).with("http://dummy")
+      subject.root = "http://dummy"
+    end
+
+    it "should use String as a directory" do
+      subject.should_receive(:directory=).with(directory = "/path/to/contents")
+      subject.root = directory
+    end
+
+    it "should use Pathname as a directory" do
+      subject.should_receive(:directory=).with(path = Pathname.new("/path/to/contents"))
+      subject.root = path
+    end
+
+    it "should use anything else as root" do
+      subject.root = anything_else = mock
+      subject.root.should == anything_else
+    end
+
+  end
+
   let(:content) { mock }
 
   describe "#contents" do
