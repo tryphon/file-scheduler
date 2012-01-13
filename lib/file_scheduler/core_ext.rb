@@ -35,3 +35,9 @@ class Hash
   end
 
 end
+
+class Array
+  def sample
+    self[rand(self.size)]
+  end
+end

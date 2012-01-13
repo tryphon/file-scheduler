@@ -13,6 +13,15 @@ describe FileScheduler::Scheduling do
     subject.next
   end
 
+  describe "#schedulable_next" do
+    
+    it "should return schedulable_contents sample" do
+      subject.stub :schedulable_contents => mock(:sample => "sample")
+      subject.schedulable_next.should == "sample"
+    end
+
+  end
+
   describe "schedulable?" do
     
     it "should not accept a content not schedulable_by_time" do

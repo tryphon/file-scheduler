@@ -43,7 +43,7 @@ module FileScheduler
     end
 
     def schedulable_next
-      schedulable_contents.shuffle.first
+      schedulable_contents.sample
     end
 
     def next_without_log
